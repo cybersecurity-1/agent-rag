@@ -1,0 +1,10 @@
+
+{
+  "graphs": {
+    "rag_graph": "./src/studio.py:build_graph"
+  },
+  "source": {
+    "kind": "pip",
+    "requirements": "requirements.txt"
+  }
+}
