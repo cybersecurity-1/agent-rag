@@ -28,8 +28,8 @@ def tavily_web_search(query: str) -> list:
     return response.get("results", [])
 
 
-st.set_page_config(page_title="HR Policy RAG", layout="wide")
-st.title("🧠 HR Policy Chatbot")
+st.set_page_config(page_title="ADVANCE RAG", layout="wide")
+st.title("🧠 RAG Chatbot")
 st.caption("Advanced RAG + LangGraph Memory")
 
 graph, embedding = load_system()
@@ -43,7 +43,7 @@ with col2:
         st.rerun()
 
 # PDF upload
-uploaded_file = st.file_uploader("📎 Upload extra PDF (optional)", type="pdf")
+uploaded_file = st.file_uploader("📎 Upload extra PDF ", type="pdf")
 
 if "dynamic_retriever" not in st.session_state:
     st.session_state.dynamic_retriever = None

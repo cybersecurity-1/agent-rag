@@ -61,7 +61,7 @@ def make_graph(retriever, cross_encoder):
             state["rewritten"],
             state["context"],
             cross_encoder,
-            top_k=3
+            top_k=5
         )
 
         print(f"   Docs after rerank:  {len(final_docs)}")
