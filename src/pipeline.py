@@ -20,8 +20,12 @@ def get_hf_token() -> str:
 
 def get_embedding():
     os.environ["HUGGINGFACEHUB_API_TOKEN"] = get_hf_token()
+    # return HuggingFaceEmbeddings(
+    #     model_name="sentence-transformers/all-MiniLM-L6-v2",
+    #     encode_kwargs={"normalize_embeddings": True}
+    # )
     return HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2",
+        model_name="BAAI/bge-small-en",
         encode_kwargs={"normalize_embeddings": True}
     )
 
