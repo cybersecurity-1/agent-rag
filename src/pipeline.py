@@ -20,12 +20,8 @@ def get_hf_token() -> str:
 
 def get_embedding():
     os.environ["HUGGINGFACEHUB_API_TOKEN"] = get_hf_token()
-    # return HuggingFaceEmbeddings(
-    #     model_name="sentence-transformers/all-MiniLM-L6-v2",
-    #     encode_kwargs={"normalize_embeddings": True}
-    # )
     return HuggingFaceEmbeddings(
-        model_name="BAAI/bge-small-en",
+        model_name="sentence-transformers/all-MiniLM-L6-v2",
         encode_kwargs={"normalize_embeddings": True}
     )
 
@@ -41,7 +37,7 @@ def build_pipeline():
     chunks = SemanticChunker(
         embeddings=embedding,
         breakpoint_threshold_type="percentile",
-        breakpoint_threshold_amount=75
+        breakpoint_threshold_amount=85
     ).split_documents(documents)
     print(f"✅ Chunks: {len(chunks)}")
 
@@ -54,9 +50,9 @@ def build_pipeline():
     print("✅ ChromaDB built")
 
     bm25_retriever = BM25Retriever.from_documents(chunks)
-    bm25_retriever.k = 10
+    bm25_retriever.k = 6
 
-    semantic_retriever = vectorstore.as_retriever(search_kwargs={"k": 10})
+    semantic_retriever = vectorstore.as_retriever(search_kwargs={"k": 6})
 
     hybrid_retriever = EnsembleRetriever(
         retrievers=[bm25_retriever, semantic_retriever],
@@ -82,7 +78,7 @@ def create_dynamic_retriever(uploaded_file, embedding):
     chunks = SemanticChunker(
         embeddings=embedding,
         breakpoint_threshold_type="percentile",
-        breakpoint_threshold_amount=75
+        breakpoint_threshold_amount=85
     ).split_documents(docs)
 
     print(f"✅ Dynamic chunks: {len(chunks)}")
