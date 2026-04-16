@@ -10,18 +10,27 @@ from sentence_transformers import CrossEncoder
 # from langchain_chroma import Chroma  # ✅ replace old import
 from langchain_community.vectorstores import Chroma
 
+import streamlit as st
+
+def get_hf_token() -> str:
+    try:
+        return st.secrets["HF_TOKEN"]
+    except:
+        return os.getenv("HF_TOKEN", "")
+
 def get_embedding():
-    os.environ["HUGGINGFACEHUB_API_TOKEN"] = os.getenv("HF_TOKEN")
+    os.environ["HUGGINGFACEHUB_API_TOKEN"] = get_hf_token()
     return HuggingFaceEmbeddings(
         model_name="sentence-transformers/all-MiniLM-L6-v2",
         encode_kwargs={"normalize_embeddings": True}
     )
 
 
+# src/pipeline.py — remove the if/else check
 def build_pipeline():
     embedding = get_embedding()
 
-    loader = PyPDFLoader("data/rag.pdf")
+    loader = PyPDFLoader("data/hr_policy.pdf")
     documents = loader.load()
     print(f"✅ PDF loaded: {len(documents)} pages")
 
@@ -32,19 +41,13 @@ def build_pipeline():
     ).split_documents(documents)
     print(f"✅ Chunks: {len(chunks)}")
 
-    if os.path.exists("./chroma_db"):
-        vectorstore = Chroma(
-            persist_directory="./chroma_db",
-            embedding_function=embedding
-        )
-        print("✅ Loaded existing ChromaDB")
-    else:
-        vectorstore = Chroma.from_documents(
-            documents=chunks,
-            embedding=embedding,
-            persist_directory="./chroma_db"
-        )
-        print("✅ Created new ChromaDB")
+    # ✅ Always rebuild — cloud storage is ephemeral
+    vectorstore = Chroma.from_documents(
+        documents=chunks,
+        embedding=embedding,
+        persist_directory="./chroma_db"
+    )
+    print("✅ ChromaDB built")
 
     bm25_retriever = BM25Retriever.from_documents(chunks)
     bm25_retriever.k = 6

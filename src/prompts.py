@@ -2,6 +2,14 @@ import os
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_groq import ChatGroq
+import streamlit as st
+
+# ✅ Works both locally and on Streamlit Cloud
+def get_api_key(key: str) -> str:
+    try:
+        return st.secrets[key]
+    except:
+        return os.getenv(key, "")
 
 llm = ChatGroq(
     model_name="llama-3.1-8b-instant",
