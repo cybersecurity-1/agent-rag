@@ -54,9 +54,9 @@ def build_pipeline():
     print("✅ ChromaDB built")
 
     bm25_retriever = BM25Retriever.from_documents(chunks)
-    bm25_retriever.k = 6
+    bm25_retriever.k = 10
 
-    semantic_retriever = vectorstore.as_retriever(search_kwargs={"k": 6})
+    semantic_retriever = vectorstore.as_retriever(search_kwargs={"k": 10})
 
     hybrid_retriever = EnsembleRetriever(
         retrievers=[bm25_retriever, semantic_retriever],
@@ -82,7 +82,7 @@ def create_dynamic_retriever(uploaded_file, embedding):
     chunks = SemanticChunker(
         embeddings=embedding,
         breakpoint_threshold_type="percentile",
-        breakpoint_threshold_amount=85
+        breakpoint_threshold_amount=75
     ).split_documents(docs)
 
     print(f"✅ Dynamic chunks: {len(chunks)}")
