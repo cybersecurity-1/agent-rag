@@ -37,7 +37,7 @@ def build_pipeline():
     chunks = SemanticChunker(
         embeddings=embedding,
         breakpoint_threshold_type="percentile",
-        breakpoint_threshold_amount=85
+        breakpoint_threshold_amount=75
     ).split_documents(documents)
     print(f"✅ Chunks: {len(chunks)}")
 
